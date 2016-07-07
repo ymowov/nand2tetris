@@ -1,7 +1,7 @@
 =begin
-1. This class translate each field from Parse class into its corresponding binary value.(16-bits)
-2. It will lookup the truth table provided by Nandtoteris class in Coursera.
-3. This code is written by Hack lanuage.
+1. The Code class converts each text extracted from Parse class into its corresponding binary value.(16-bits)
+2. Refer the truth table provided by Nandtoteris class in Coursera.
+3. The assembly code is written in Hack lanuage.
 
 Example:
 A-instruction:
@@ -30,11 +30,11 @@ class Code
 
   def compile
     case type
-    when @@a_instuction
+    when A_INSTRUCTION
       convert_to_binary(_destination)
-    when @@c_instuction
+    when C_INSTRUCTION
       "111" << comp << dest << jump
-    when @@variable_instuction
+    when VARIABLE_INSTRUCTION
       convert_to_binary(@symbol_table.read(_destination))
     end
   end
@@ -49,11 +49,11 @@ class Code
 
   def type
     if @str.include? "@"
-      is_integer?(@str.gsub("@", "")) ? @@a_instuction : @@variable_instuction
+      is_integer?(@str.gsub("@", "")) ? A_INSTRUCTION : VARIABLE_INSTRUCTION
     elsif @str.start_with?("(") && @str.end_with?(")")
-      @@label_instuction
+      LABEL_INSTRUCTION
     else
-      @@c_instuction
+      C_INSTRUCTION
     end
   end
 
@@ -87,10 +87,6 @@ private
     else
       "0"
     end
-  end
-
-  def str
-    @str
   end
 
   def is_integer?(str)

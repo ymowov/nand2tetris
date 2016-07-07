@@ -1,3 +1,4 @@
+# Record the address of labels and variables in register
 class SymbolTable
   def initialize
     @table = Hash["SP", "0", "LCL", "1", "ARG", "2", "THIS",
@@ -11,8 +12,8 @@ class SymbolTable
   end
 
   def insert_variable(label)
+    # index of variables becomes from 16 (defined by Hack language)
     unless has_symbol?(label)
-      # puts "has! #{label}, #{@variable_num}"
       @table[label] = (16 + @variable_num).to_s
       @variable_num+=1
     end
@@ -22,11 +23,8 @@ class SymbolTable
     @table[label]
   end
 
+private
   def has_symbol?(label)
     @table.has_key?(label)
-  end
-
-  def table
-    @table
   end
 end
