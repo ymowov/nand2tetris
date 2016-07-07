@@ -7,12 +7,12 @@ class SymbolTable
   end
 
   def insert(label, value)
-    @table[label] = value unless @table.has_symbol?(code._destination)
+    @table[label] = value unless has_symbol?(label)
   end
 
   def insert_variable(label)
     unless has_symbol?(label)
-      puts "has! #{label}, #{@variable_num}"
+      # puts "has! #{label}, #{@variable_num}"
       @table[label] = (16 + @variable_num).to_s
       @variable_num+=1
     end

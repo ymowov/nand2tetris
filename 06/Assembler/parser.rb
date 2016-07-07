@@ -15,7 +15,7 @@ module Parser
     case type
     when @@c_instuction
       @str[0..equal_index-1] if equal_index > 0
-    when @@a_instuction
+    when @@a_instuction, @@variable_instuction
       @str[1..-1]
     when @@label_instuction
       @str[1..-2]

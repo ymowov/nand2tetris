@@ -23,18 +23,19 @@ class Code
                    "X-D", "000111", "D&X", "000000", "D|X", "010101"]
 
 
-  def initialize(str)
+  def initialize(str, symbol_table = nil)
     @str = str
+    @symbol_table = symbol_table
   end
 
   def compile
     case type
     when @@a_instuction
-      "0" << ("%015b" % _destination.to_i)
+      convert_to_binary(_destination)
     when @@c_instuction
       "111" << comp << dest << jump
-    when @@label_instuction
-      # look up the symbol table
+    when @@variable_instuction
+      convert_to_binary(@symbol_table.read(_destination))
     end
   end
 
@@ -49,7 +50,7 @@ class Code
   def type
     if @str.include? "@"
       is_integer?(@str.gsub("@", "")) ? @@a_instuction : @@variable_instuction
-    elsif @str[0, -1].eql?("()")
+    elsif @str.start_with?("(") && @str.end_with?(")")
       @@label_instuction
     else
       @@c_instuction
@@ -57,10 +58,18 @@ class Code
   end
 
 private
+  def convert_to_binary(decimal)
+    "0" << ("%015b" % decimal.to_i)
+  end
+
   def dest
-    %w(A D M).each_with_object("") do |c, str|
-      str << (_destination.include?(c) ? "1" : "0")
-    end if _destination
+    if _destination
+      %w(A D M).each_with_object("") do |c, str|
+        str << (_destination.include?(c) ? "1" : "0")
+      end
+    else
+      "000"
+    end
   end
 
   def jump

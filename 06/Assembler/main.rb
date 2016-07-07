@@ -6,7 +6,7 @@ require "tempfile"
 @c_instuction = 1
 @label_instuction = 2
 @variable_instuction = 3
-path_to_asm_file = "../add/Add"
+path_to_asm_file = "../rect/RectL"
 
 hack_file = File.open(path_to_asm_file+".hack", "w")
 asm_file = File.open(path_to_asm_file+".asm", "r")
@@ -21,12 +21,9 @@ end
 index = 0
 t_file.open.each_line do |line|
   code = Code.new(line.gsub("\n", ""))
-  case code.type
-  when @label_instuction
+  if code.type == @label_instuction
     symbol_table.insert(code._destination, index)
-  when @variable_instuction
-    symbol_table.insert_variable(code._destination)
-    index+=1
+    # puts "#{code._destination}: #{index}"
   else
     index+=1
   end
@@ -34,8 +31,15 @@ end
 
 t_file.open.each_line do |line|
   code = Code.new(line.gsub("\n", ""))
-  # puts line
-  hack_file.write "#{code.compile}\n"
+  symbol_table.insert_variable(code._destination) if code.type == @variable_instuction
+end
+
+# puts symbol_table.table
+
+t_file.open.each_line do |line|
+  code = Code.new(line.gsub("\n", ""), symbol_table)
+  # puts "#{code.compile}: #{line.gsub("\n", "")}"
+  hack_file.write "#{code.compile}\n" unless code.type == @label_instuction
 end
 
 asm_file.close
