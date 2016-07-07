@@ -9,6 +9,7 @@ module Parser
   @@a_instuction = 0
   @@c_instuction = 1
   @@label_instuction = 2
+  @@variable_instuction = 3
   def _destination
     # print the character before the '='
     case type

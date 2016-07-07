@@ -24,17 +24,17 @@ class Code
 
 
   def initialize(str)
-    @str = remove_white_space(str)
+    @str = str
   end
 
   def compile
     case type
     when @@a_instuction
-      compile_a_instuction
+      "0" << ("%015b" % _destination.to_i)
     when @@c_instuction
-      compile_c_instuction
+      "111" << comp << dest << jump
     when @@label_instuction
-      compile_label
+      # look up the symbol table
     end
   end
 
@@ -46,21 +46,19 @@ class Code
     @@jump_table
   end
 
+  def type
+    if @str.include? "@"
+      is_integer?(@str.gsub("@", "")) ? @@a_instuction : @@variable_instuction
+    elsif @str[0, -1].eql?("()")
+      @@label_instuction
+    else
+      @@c_instuction
+    end
+  end
+
 private
-  def compile_a_instuction
-    "0" << ("%015b" % _destination.to_i)
-  end
-
-  def compile_c_instuction
-    "111" << comp << dest << jump
-  end
-
-  def compile_label
-    # look up the symbol table
-  end
-
   def dest
-    %w(A M D).each_with_object("") do |c, str|
+    %w(A D M).each_with_object("") do |c, str|
       str << (_destination.include?(c) ? "1" : "0")
     end if _destination
   end
@@ -82,22 +80,12 @@ private
     end
   end
 
-  def remove_white_space(str)
-    str.gsub(/\s+/, "")
-  end
-
   def str
     @str
   end
 
-  def type
-    if @str.include? "@"
-      @@a_instuction
-    elsif @str[0, -1].eql?("()")
-      @@label_instuction
-    else
-      @@c_instuction
-    end
+  def is_integer?(str)
+    str.to_i.to_s == str
   end
 end
 
