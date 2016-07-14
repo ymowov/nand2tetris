@@ -32,33 +32,23 @@ class CodeWriter
     # add -> D=D+M
     case @parser.arg1
     when "add"
-      pop
-      pop(save_to_d: false)
-      c_instruction("D=D+M")
-      push
+      write_arithmetic_binary(calculation: "D+M")
     when "sub"
-      pop
-      pop(save_to_d: false)
-      c_instruction("D=M-D")
-      push
+      write_arithmetic_binary(calculation: "M-D")
     when "eq"
-      pop
-      pop(save_to_d: false)
-      c_instruction("D=M-D")
-      jump("JEQ")
-      push
+      write_arithmetic_binary_jump("JEQ")
     when "gt"
-      pop
-      pop(save_to_d: false)
-      c_instruction("D=M-D")
-      jump("JGT")
-      push
+      write_arithmetic_binary_jump("JGT")
     when "lt"
-      pop
-      pop(save_to_d: false)
-      c_instruction("D=M-D")
-      jump("JLT")
-      push
+      write_arithmetic_binary_jump("JLT")
+    when "and"
+      write_arithmetic_binary(calculation: "M&D")
+    when "or"
+      write_arithmetic_binary(calculation: "M|D")
+    when "neg"
+      write_arithmetic_binary(calculation: "-D", unary: true)
+    when "not"
+      write_arithmetic_binary(calculation: "!D", unary: true)
     end
   end
 
@@ -102,6 +92,18 @@ class CodeWriter
     label_instruction("label_jeq")
     c_instruction("D=-1")
     label_instruction("label_jne")
+  end
+
+  def write_arithmetic_binary(calculation:, jump_type: nil, unary: false)
+    pop
+    pop(save_to_d: false) unless unary
+    c_instruction("D=#{calculation}")
+    jump(jump_type) if jump_type
+    push
+  end
+
+  def write_arithmetic_binary_jump(jump_type)
+    write_arithmetic_binary(calculation: "M-D", jump_type: jump_type)
   end
 
 private
