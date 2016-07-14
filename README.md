@@ -8,7 +8,7 @@
 #### Test Programs
 Symbolic Program | Without Symbols | Description
 ------------ | ------------- | -------------
-Add.asm  | | Adds up the constants 2 and 3 and puts the result in R0.
+Add.asm |  | Adds up the constants 2 and 3 and puts the result in R0.
 Max.asm | MaxL.asm | Computes max(R0,R1) and puts the result in R2.
 Rect.asm | RectL.asm | Draws a rectangle at the top-left corner of the screen. The rectangle is 16 pixels wide and R0 pixels high.
 Pong.asm | PongL.asm | A single-player Pong game.
@@ -23,7 +23,7 @@ Pong.asm | PongL.asm | A single-player Pong game.
 * Fill.asm - I/O handling: When a key is pressed (any key), the program blackens the screen. When no key is pressed, the program clears the screen.
 
 ### Week 3: Sequential Logic
-* DFF - Data Flip-Flop (primitive)    
+* DFF - Data Flip-Flop (primitive)
 * Bit - 1-bit register
 * Register - 16-bit register
 * RAM8 - 16-bit / 8-register memory
@@ -34,14 +34,14 @@ Pong.asm | PongL.asm | A single-player Pong game.
 * PC - 16-bit program counter
 
 ### Week 2: Boolean Arithmetic
-* Half - Adder  
+* Half - Adder
 * FullAdder - Full Adder
 * Add16 - 16-bit Adder
 * Inc16 - 16-bit incrementer
-* ALU - Arithmetic Logic Unit 
+* ALU - Arithmetic Logic Unit
 
 ### Week 1: Boolean Logic
-* Nand - Nand gate (primitive)  
+* Nand - Nand gate (primitive)
 * Not - Not gate
 * And - And gate
 * Or - Or gate
