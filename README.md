@@ -3,8 +3,8 @@
 
 ### Week 6: Assembler
 * Assembler.rb - The assembler I built in Ruby to compile assembly code written in Hack language(.asm) to binary code(.hack)
-* `main.rb` integrates the assembler I designed to compile all the test programs list below.
-* After compiling, the program will automatically compare all the correspond correct .cmp.hack file to check whether the assembler works well.
+* `main.rb` use the assembler I designed to compile all the test programs list below.
+* After compiling, this program will automatically compare all the correspond .cmp.hack file, the machine code created correctly by the course directors, to check whether the assembler works well.
 
 #### Test Programs
 Symbolic Program | Without Symbols | Description
