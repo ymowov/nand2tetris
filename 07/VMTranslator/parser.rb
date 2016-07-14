@@ -34,8 +34,8 @@ class Parser
     split_command.count
   end
 
-  def current_command
-    @current_command
+  def line_number
+    @vm_file.lineno
   end
 
   private

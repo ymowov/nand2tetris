@@ -84,10 +84,10 @@ class CodeWriter
   end
 
   def jump(jump_type)
-    a_instruction("label_jeq")
+    a_instruction("label_jeq", true)
     c_instruction("D; #{jump_type}")
     c_instruction("D=0")
-    a_instruction("label_jne")
+    a_instruction("label_jne", true)
     c_instruction("0; JEQ")
     label_instruction("label_jeq")
     c_instruction("D=-1")
@@ -107,8 +107,9 @@ class CodeWriter
   end
 
 private
-  def a_instruction(register)
-    @hack_file.write("@#{register}\n")
+  def a_instruction(register, label = false)
+    line_number = @parser.line_number if label
+    @hack_file.write("@#{register}#{line_number}\n")
   end
 
   def c_instruction(string)
@@ -116,6 +117,7 @@ private
   end
 
   def label_instruction(string)
-    @hack_file.write("(#{string})\n")
+    # puts @parser.line_number
+    @hack_file.write("(#{string}#{@parser.line_number})\n")
   end
 end
