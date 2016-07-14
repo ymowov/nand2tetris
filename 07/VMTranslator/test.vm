@@ -1,0 +1,3 @@
+push constant 18
+push constant 19
+lt

@@ -1,0 +1,35 @@
+@18
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@19
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+D=M-D
+@label_jeq
+D; JLT
+D=0
+@label_jne
+0; JEQ
+(label_jeq)
+D=-1
+(label_jne)
+@SP
+A=M
+M=D
+@SP
+M=M+1
