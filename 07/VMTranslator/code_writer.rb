@@ -22,9 +22,9 @@ class CodeWriter
     when C_ARITHMETIC
       write_arithmetic
     when C_PUSH
-      write_push_pop
+      write_push
     when C_POP
-      write_push_pop
+      write_pop
     end
   end
 
@@ -52,11 +52,45 @@ class CodeWriter
     end
   end
 
-  def write_push_pop
-    case @parser.arg1
-    when "push"
-      push(register: (@parser.arg(2) || @parser.arg(1)))
-    # push constant 1 -> @R1; M=1
+  def write_push
+    case @parser.arg(1)
+    when S_CONSTANT
+      push_stack(register: @parser.arg(2))
+    when S_LOCAL, S_ARGUMENTS, S_THIS, S_THAT
+      load_memory
+      push_stack
+    end
+  end
+
+  def write_pop
+    case @parser.arg(1)
+    when S_LOCAL, S_ARGUMENTS, S_THIS, S_THAT
+      # pop local 3
+      pop_stack(save_to_d: true)
+      a_instruction(R_R13)
+      c_instruction("M=D")
+      load_memory(pop_to_mem: true)
+    end
+  end
+
+  def load_memory(pop_to_mem: false)
+    labels = Hash[S_LOCAL, "LCL", S_ARGUMENTS, "ARG", S_THIS, "THIS", S_THAT, "THAT" ]
+    a_instruction(@parser.arg(2)) # load the index as constant
+    c_instruction("D=A")
+    a_instruction(labels[@parser.arg(1)]) # load the correspond address
+    c_instruction("AD=M+D") # set A = address + offset
+    if pop_to_mem
+      a_instruction(R_R14) # save the address + offset to R14
+      c_instruction("M=D")
+
+      a_instruction(R_R13) # load the data just be poped, saved in R13
+      c_instruction("D=M")
+
+      a_instruction(R_R14) # save the data to *(R14)
+      c_instruction("A=M")
+      c_instruction("M=D")
+    else
+      c_instruction("D=M")
     end
   end
 
@@ -64,7 +98,7 @@ class CodeWriter
     @hack_file.close
   end
 
-  def push(register: nil)
+  def push_stack(register: nil)
     if register
       a_instruction(register) # save the register's value to D-register
       c_instruction("D=A")
@@ -76,7 +110,7 @@ class CodeWriter
     c_instruction("M=M+1")
   end
 
-  def pop(save_to_d: true)
+  def pop_stack(save_to_d: true)
     a_instruction("SP")
     c_instruction("M=M-1")
     c_instruction("A=M")
@@ -95,11 +129,11 @@ class CodeWriter
   end
 
   def write_arithmetic_binary(calculation:, jump_type: nil, unary: false)
-    pop
-    pop(save_to_d: false) unless unary
+    pop_stack
+    pop_stack(save_to_d: false) unless unary
     c_instruction("D=#{calculation}")
     jump(jump_type) if jump_type
-    push
+    push_stack
   end
 
   def write_arithmetic_binary_jump(jump_type)
