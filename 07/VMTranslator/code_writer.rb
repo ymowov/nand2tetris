@@ -56,6 +56,9 @@ class CodeWriter
     case @parser.arg(1)
     when S_CONSTANT
       push_stack(register: @parser.arg(2))
+    when S_STATIC
+      load_static
+      push_stack
     when S_LOCAL, S_ARGUMENTS, S_THIS, S_THAT
       load_memory
       push_stack
@@ -64,22 +67,30 @@ class CodeWriter
 
   def write_pop
     case @parser.arg(1)
+    when S_STATIC
+      pop_stack(save_to_d: true)
+      load_static(save_from_d: true)
     when S_LOCAL, S_ARGUMENTS, S_THIS, S_THAT
       # pop local 3
       pop_stack(save_to_d: true)
       a_instruction(R_R13)
       c_instruction("M=D")
-      load_memory(pop_to_mem: true)
+      load_memory(save_from_r13: true)
     end
   end
 
-  def load_memory(pop_to_mem: false)
+  def load_static(save_from_d: false)
+    a_instruction("#{@parser.file_name}.#{@parser.arg(2)}")
+    save_from_d ? c_instruction("M=D") : c_instruction("D=M")
+  end
+
+  def load_memory(save_from_r13: false)
     labels = Hash[S_LOCAL, "LCL", S_ARGUMENTS, "ARG", S_THIS, "THIS", S_THAT, "THAT" ]
     a_instruction(@parser.arg(2)) # load the index as constant
     c_instruction("D=A")
     a_instruction(labels[@parser.arg(1)]) # load the correspond address
     c_instruction("AD=M+D") # set A = address + offset
-    if pop_to_mem
+    if save_from_r13
       a_instruction(R_R14) # save the address + offset to R14
       c_instruction("M=D")
 

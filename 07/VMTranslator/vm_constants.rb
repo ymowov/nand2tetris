@@ -10,12 +10,12 @@ C_RETURN = 7
 C_CALL = 8
 
 # type of memory segments
-S_STATIC = "static"
 S_THIS = "this"
 S_LOCAL = "local"
 S_ARGUMENTS = "argument"
 S_THAT = "that"
 S_CONSTANT = "constant"
+S_STATIC = "static"
 S_POINTER = "pointer"
 S_TEMP ="temp"
 

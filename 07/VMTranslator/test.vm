@@ -5,5 +5,5 @@
 
 // Executes a sequence of arithmetic and logical operations
 // on the stack.
-push constant 22
-pop argument 1
+push static 2
+pop static 1

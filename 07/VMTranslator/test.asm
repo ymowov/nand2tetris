@@ -1,5 +1,5 @@
-@22
-D=A
+@test.2
+D=M
 @SP
 A=M
 M=D
@@ -9,17 +9,5 @@ M=M+1
 M=M-1
 A=M
 D=M
-@13
-M=D
-@1
-D=A
-@ARG
-A=M+D
-D=A
-@14
-M=D
-@13
-D=M
-@14
-A=M
+@test.1
 M=D
