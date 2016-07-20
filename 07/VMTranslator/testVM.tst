@@ -8,7 +8,7 @@ set RAM[300] 999,
 set RAM[3015] 888,
 
 
-repeat 11 {
+repeat 99 {
   vmstep;
 }
 

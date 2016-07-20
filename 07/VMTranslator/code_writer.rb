@@ -59,7 +59,7 @@ class CodeWriter
     when S_STATIC
       load_static
       push_stack
-    when S_LOCAL, S_ARGUMENTS, S_THIS, S_THAT
+    when S_LOCAL, S_ARGUMENTS, S_THIS, S_THAT, S_POINTER, S_TEMP
       load_memory
       push_stack
     end
@@ -70,8 +70,7 @@ class CodeWriter
     when S_STATIC
       pop_stack(save_to_d: true)
       load_static(save_from_d: true)
-    when S_LOCAL, S_ARGUMENTS, S_THIS, S_THAT
-      # pop local 3
+    when S_LOCAL, S_ARGUMENTS, S_THIS, S_THAT, S_POINTER, S_TEMP
       pop_stack(save_to_d: true)
       a_instruction(R_R13)
       c_instruction("M=D")
@@ -85,11 +84,17 @@ class CodeWriter
   end
 
   def load_memory(save_from_r13: false)
-    labels = Hash[S_LOCAL, "LCL", S_ARGUMENTS, "ARG", S_THIS, "THIS", S_THAT, "THAT" ]
+    labels = Hash[S_LOCAL, "LCL", S_ARGUMENTS, "ARG", S_THIS,
+      "THIS", S_THAT, "THAT", S_POINTER, "THIS", S_TEMP, R_TEMP ]
     a_instruction(@parser.arg(2)) # load the index as constant
     c_instruction("D=A")
     a_instruction(labels[@parser.arg(1)]) # load the correspond address
-    c_instruction("AD=M+D") # set A = address + offset
+    case @parser.arg(1)
+    when S_TEMP, S_POINTER
+      c_instruction("AD=A+D") # set A = temp/pointer(this)'s address + offset
+    else
+      c_instruction("AD=M+D") # set A = address + offset
+    end
     if save_from_r13
       a_instruction(R_R14) # save the address + offset to R14
       c_instruction("M=D")

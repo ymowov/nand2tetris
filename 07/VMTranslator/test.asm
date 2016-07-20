@@ -1,5 +1,5 @@
-@test.2
-D=M
+@3030
+D=A
 @SP
 A=M
 M=D
@@ -9,5 +9,16 @@ M=M+1
 M=M-1
 A=M
 D=M
-@test.1
+@13
+M=D
+@0
+D=A
+@THIS
+AD=A+D
+@14
+M=D
+@13
+D=M
+@14
+A=M
 M=D

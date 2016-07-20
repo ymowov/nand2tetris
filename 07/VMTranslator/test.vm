@@ -5,5 +5,5 @@
 
 // Executes a sequence of arithmetic and logical operations
 // on the stack.
-push static 2
-pop static 1
+push constant 3030
+pop pointer 0

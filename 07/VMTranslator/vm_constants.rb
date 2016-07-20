@@ -23,7 +23,7 @@ S_TEMP ="temp"
 R_R0 = R_SP = 0
 R_R1 = R_LCL = 1
 R_R2 = R_ARG = 2
-R_R3 = R_THIS = 3
+R_R3 = R_THIS = R_POINTER = 3
 R_R4 = R_THAT = 4
 R_R5 = R_TEMP = 5
 R_R6 = 6
