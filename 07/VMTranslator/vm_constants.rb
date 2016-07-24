@@ -8,6 +8,7 @@ C_IF = 5
 C_FUNCTION = 6
 C_RETURN = 7
 C_CALL = 8
+C_JUMP = 10
 
 # type of memory segments
 S_THIS = "this"

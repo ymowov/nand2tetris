@@ -25,12 +25,16 @@ class CodeWriter
       write_push
     when C_POP
       write_pop
+    when C_LABEL
+      write_label
+    when C_GOTO
+      write_goto
     end
   end
 
   def write_arithmetic
     # add -> D=D+M
-    case @parser.arg1
+    case @parser.arg0
     when "add"
       write_arithmetic_binary(calculation: "D+M")
     when "sub"
@@ -76,6 +80,20 @@ class CodeWriter
       c_instruction("M=D")
       load_memory(save_from_r13: true)
     end
+  end
+
+  def write_label
+    define_label_instruction(@parser.arg(1))
+  end
+
+  def write_goto
+    if @parser.arg0.eql?("if-goto")
+      pop_stack(save_to_d: true)
+      conditional_jump = true
+    end
+    puts @parser.arg(1)
+    a_instruction(@parser.arg(1))
+    c_instruction("#{conditional_jump ? 'D' : '0'}; JNE")
   end
 
   def load_static(save_from_d: false)
@@ -144,6 +162,11 @@ class CodeWriter
     label_instruction("label_jne")
   end
 
+  def condition_jump(address:, set_line_number: false)
+    a_instruction(address, set_line_number)
+    c_instruction("0; JEQ")
+  end
+
   def write_arithmetic_binary(calculation:, jump_type: nil, unary: false)
     pop_stack
     pop_stack(save_to_d: false) unless unary
@@ -157,8 +180,8 @@ class CodeWriter
   end
 
 private
-  def a_instruction(register, label = false)
-    line_number = @parser.line_number if label
+  def a_instruction(register, set_line_number = false)
+    line_number = @parser.line_number if set_line_number
     @hack_file.write("@#{register}#{line_number}\n")
   end
 
@@ -169,5 +192,9 @@ private
   def label_instruction(string)
     # puts @parser.line_number
     @hack_file.write("(#{string}#{@parser.line_number})\n")
+  end
+
+  def define_label_instruction(string)
+    @hack_file.write("(#{string})\n")
   end
 end
