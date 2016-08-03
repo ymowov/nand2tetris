@@ -5,17 +5,6 @@
 
 // Executes a sequence of arithmetic and logical operations
 // on the stack.
-push constant 0
-pop local 0        // initialize sum = 0
-label LOOP_START
-push argument 0
+function test.test 2
 push local 0
-add
-pop local 0    // sum = sum + counter
-push argument 0
-push constant 1
-sub
-pop argument 0     // counter--
-push argument 0
-if-goto LOOP_START // If counter > 0, goto LOOP_START
-push local 0
+return

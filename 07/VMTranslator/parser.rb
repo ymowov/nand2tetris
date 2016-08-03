@@ -4,7 +4,7 @@ class Parser
   @@command_types = Hash["add", C_ARITHMETIC, "sub", C_ARITHMETIC, "neg", C_ARITHMETIC,
     "eq", C_ARITHMETIC, "gt", C_ARITHMETIC, "lt", C_ARITHMETIC, "and", C_ARITHMETIC,
     "or", C_ARITHMETIC, "not", C_ARITHMETIC, "push", C_PUSH, "pop", C_POP, "label", C_LABEL,
-    "goto", C_GOTO, "if-goto", C_GOTO]
+    "goto", C_GOTO, "if-goto", C_GOTO, "call", C_CALL, "function", C_FUNCTION, "return", C_RETURN]
 
   def initialize(path_to_vm_file)
     @vm_file = File.open(path_to_vm_file, "r")
@@ -29,6 +29,10 @@ class Parser
 
   def arg(index)
     split_command[index]
+  end
+
+  def args
+    split_command
   end
 
   def arg_count
