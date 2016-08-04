@@ -133,7 +133,7 @@ class CodeWriter
     a_instruction("SP") # SP = ARG+1
     c_instruction("M=D")
 
-    %w(THIS THAT ARG LCL).each_with_index do |segment, index|
+    %w(THAT THIS ARG LCL).each_with_index do |segment, index|
       a_instruction(R_R15)
       c_instruction("MD=M-1")
       c_instruction("A=D")
