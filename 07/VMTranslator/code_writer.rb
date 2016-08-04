@@ -99,7 +99,7 @@ class CodeWriter
       conditional_jump = true
     end
     a_instruction(@parser.arg(1))
-    c_instruction("#{conditional_jump ? 'D' : '0'}; JNE")
+    c_instruction("#{conditional_jump ? 'D; JNE' : '0; JEQ'}")
   end
 
   def write_call

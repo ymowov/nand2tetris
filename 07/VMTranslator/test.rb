@@ -1,7 +1,7 @@
 require "./code_writer.rb"
-
-# @c = CodeWriter.new("../StackArithmetic/StackTest/StackTestYm.asm")
-# @p = @c.set_file_name("../StackArithmetic/StackTest/StackTest.vm")
-@c = CodeWriter.new("./test.asm")
-@p = @c.set_file_name("./test.vm")
+path = "../../08/ProgramFlow/FibonacciSeries/FibonacciSeries"
+@c = CodeWriter.new("#{path}.asm")
+@p = @c.set_file_name("#{path}.vm")
+# @c = CodeWriter.new("./test.asm")
+# @p = @c.set_file_name("./test.vm")
 @c.write
