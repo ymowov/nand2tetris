@@ -168,16 +168,16 @@ class CodeWriter
     c_instruction("D=A")
     push_stack
     a_instruction("LCL") # LCL
-    c_instruction("D=A")
+    c_instruction("D=M")
     push_stack
     a_instruction("ARG") # ARG
-    c_instruction("D=A")
+    c_instruction("D=M")
     push_stack
     a_instruction("THIS") # THIS
-    c_instruction("D=A")
+    c_instruction("D=M")
     push_stack
     a_instruction("THAT") # THAT
-    c_instruction("D=A")
+    c_instruction("D=M")
     push_stack
 
     # reposition
