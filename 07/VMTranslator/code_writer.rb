@@ -3,6 +3,7 @@ require "./parser.rb"
 class CodeWriter
   def initialize(path_to_hack_file)
     @hack_file = File.open(path_to_hack_file, "w")
+    write_init
   end
 
   def set_file_name(path_to_vm_file)
@@ -15,7 +16,6 @@ class CodeWriter
         translate
       end
     end
-    close
   end
 
   def translate
@@ -106,10 +106,11 @@ class CodeWriter
     push_arguments
     function_init
     write_goto
-    label_instruction("LABEL", true) # return address destination
+    label_instruction("RETURN_#{@parser.arg(1)}") # return address destination
   end
 
   def write_function
+    @function_name = @parser.arg(1)
     label_instruction(@parser.arg(1))
     @parser.arg(2).to_i.times do
       a_instruction("0")
@@ -145,13 +146,18 @@ class CodeWriter
         c_instruction("M=D")
       end
     end
+
+    a_instruction("RETURN_#{@function_name}")
+    c_instruction("0; JEQ")
   end
 
   def push_arguments
-    @parser.args[2..-1].each do |arg|
-      a_instruction(arg)
-      c_instruction("D=A")
-      push_stack
+    @arguments_count = 0
+    a_instruction("SP")
+    c_instruction("D=M")
+    @parser.arg(2).to_i.times do
+      c_instruction("AD=D-1")
+      c_instruction("M=0")
       @arguments_count += 1
     end
   end
@@ -177,13 +183,13 @@ class CodeWriter
     # reposition
     a_instruction(@arguments_count+5) # ARG = SP - arguments_count - 5
     c_instruction("D=A")
-    a_instruction(@SP)
+    a_instruction("SP")
     c_instruction("D=M-D")
-    a_instruction(@ARG)
+    a_instruction("ARG")
     c_instruction("M=D")
-    a_instruction(@SP) # LCL = SP
+    a_instruction("SP") # LCL = SP
     c_instruction("D=M")
-    a_instruction(@ARG)
+    a_instruction("LCL")
     c_instruction("M=D")
   end
 
@@ -266,6 +272,18 @@ class CodeWriter
     write_arithmetic_binary(calculation: "M-D", jump_type: jump_type)
   end
 
+  def write_init
+    a_instruction("256") # SP = 256
+    c_instruction("D=A")
+    a_instruction("SP")
+    c_instruction("M=D")
+    a_instruction("Sys.init")
+    c_instruction("0; JEQ")
+  end
+
+  def close
+    @hack_file.close
+  end
 private
   def a_instruction(register, set_line_number = false)
     line_number = @parser.line_number if set_line_number
@@ -281,7 +299,4 @@ private
     @hack_file.write("(#{string}#{line_number})\n")
   end
 
-  def close
-    @hack_file.close
-  end
 end

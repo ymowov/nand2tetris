@@ -47,6 +47,10 @@ class Parser
     File.basename(@vm_file.path, ".vm")
   end
 
+  def command
+    @current_command
+  end
+
   private
   def split_command
     @current_command.split(" ")
